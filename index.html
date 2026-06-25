@@ -1,535 +1,1312 @@
-<!-- THE BIGID TRAIL — Sales Enablement Game -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cozy Home — Staging That Sells</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --green:#33ff66; --dim:#1f9943; --amber:#ffcc33; --red:#ff5544;
-    --bg:#0a0f0a; --panel:#0e160e; --line:#1c3a1c; --white:#dfffe0;
+  :root {
+    --navy: #1e3a5f;
+    --deep-blue: #1a3050;
+    --slate: #2d4a6b;
+    --cream: #faf8f4;
+    --warm-white: #f5f3ee;
+    --terracotta: #c4714a;
+    --sage: #6a7c5b;
+    --gold: #b8954a;
+    --text: #1c1c1c;
+    --muted: #6b6560;
   }
-  *{box-sizing:border-box}
-  .bt-root{
-    font-family:"Courier New",ui-monospace,monospace;
-    background:var(--bg); color:var(--green);
-    border:2px solid var(--line); border-radius:8px;
-    padding:0; max-width:860px; margin:0 auto;
-    box-shadow:0 0 40px rgba(51,255,102,.08) inset;
-    overflow:hidden;
-  }
-  .bt-scan{position:relative}
-  .bt-scan:after{
-    content:"";position:absolute;inset:0;pointer-events:none;
-    background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0px,rgba(0,0,0,0) 2px,rgba(0,0,0,.18) 3px,rgba(0,0,0,0) 4px);
-    mix-blend-mode:multiply;border-radius:6px;
-  }
-  .bt-bar{
-    display:flex;align-items:center;justify-content:space-between;
-    background:#0c130c;border-bottom:1px solid var(--line);
-    padding:8px 14px;font-size:12px;letter-spacing:1px;color:var(--dim);
-  }
-  .bt-bar b{color:var(--amber)}
-  .bt-stage{padding:22px 26px 26px}
-  .bt-title{
-    color:var(--white);font-size:clamp(20px,3vw,30px);
-    text-align:center;letter-spacing:2px;margin:10px 0 4px;
-    text-shadow:0 0 10px rgba(51,255,102,.4);
-  }
-  .bt-sub{text-align:center;color:var(--dim);font-size:12px;margin-bottom:18px;letter-spacing:1px}
-  .bt-art{
-    white-space:pre;font-size:11px;line-height:1.15;color:var(--dim);
-    text-align:center;margin:0 auto 16px;overflow-x:auto;
-  }
-  .bt-body{font-size:15px;line-height:1.6;color:var(--green);margin:0 0 18px}
-  .bt-body .hl{color:var(--amber)}
-  .bt-body .bad{color:var(--red)}
-  .bt-body .good{color:var(--white)}
-  .bt-meddicc{
-    border:1px dashed var(--line);padding:10px 14px;margin:0 0 18px;
-    font-size:12px;color:var(--dim);background:#0b120b;border-radius:5px;
-  }
-  .bt-meddicc b{color:var(--amber)}
-  .bt-choices{display:flex;flex-direction:column;gap:10px}
-  .bt-btn{
-    font-family:inherit;text-align:left;cursor:pointer;
-    background:#0c150c;color:var(--green);border:1px solid var(--line);
-    padding:12px 14px;font-size:14px;border-radius:5px;
-    transition:.12s;line-height:1.4;
-  }
-  .bt-btn:hover{background:#11231a;border-color:var(--green);color:var(--white);transform:translateX(3px)}
-  .bt-btn .k{color:var(--amber);font-weight:bold;margin-right:8px}
-  .bt-stats{
-    display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
-    padding:10px 14px;border-top:1px solid var(--line);background:#0c130c;font-size:11px;
-  }
-  .bt-stat{text-align:center}
-  .bt-stat .lbl{color:var(--dim);letter-spacing:.5px}
-  .bt-stat .val{color:var(--white);font-size:15px;font-weight:bold;margin-top:2px}
-  .bt-meter{height:5px;background:#10210f;border-radius:3px;margin-top:4px;overflow:hidden}
-  .bt-meter i{display:block;height:100%;background:var(--green)}
-  .bt-meter.warn i{background:var(--amber)}
-  .bt-meter.crit i{background:var(--red)}
-  .bt-foot{font-size:11px;color:var(--dim);text-align:center;padding:8px;border-top:1px solid var(--line)}
-  .bt-death .bt-title{color:var(--red);text-shadow:0 0 14px rgba(255,85,68,.5)}
-  .bt-death .bt-art{color:var(--red)}
-  .bt-win .bt-title{color:var(--amber);text-shadow:0 0 16px rgba(255,204,51,.5)}
-  .bt-talk{
-    border-left:3px solid var(--amber);padding:8px 12px;margin:14px 0 4px;
-    background:#13110a;font-size:13px;color:var(--amber);border-radius:0 4px 4px 0;
-  }
-  .bt-talk b{color:var(--white)}
-  .bt-progress{display:flex;gap:3px;margin:0 0 16px;flex-wrap:wrap}
-  .bt-pip{flex:1;min-width:14px;height:6px;background:#10210f;border-radius:2px}
-  .bt-pip.done{background:var(--green)}
-  .bt-pip.now{background:var(--amber)}
-  @media(max-width:560px){.bt-stats{grid-template-columns:repeat(2,1fr)}.bt-art{font-size:8px}}
-</style>
 
-<div class="bt-root bt-scan" id="bt">
-  <div class="bt-bar">
-    <span>THE BIGID TRAIL <b>v1.0</b></span>
-    <span id="bt-loc">— LOADING —</span>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+
+  nav.scrolled {
+    background: rgba(250,248,244,0.96);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.08);
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--cream);
+    letter-spacing: 0.02em;
+    transition: color 0.3s;
+    text-decoration: none;
+  }
+
+  nav.scrolled .logo { color: var(--navy); }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.88);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  nav.scrolled .nav-links a { color: var(--muted); }
+  .nav-links a:hover { color: var(--terracotta) !important; }
+
+  .nav-cta {
+    background: var(--terracotta);
+    color: white !important;
+    padding: 10px 22px;
+    border-radius: 3px;
+    font-weight: 500 !important;
+    transition: background 0.2s !important;
+    letter-spacing: 0.04em !important;
+  }
+
+  .nav-cta:hover { background: #a85d39 !important; color: white !important; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    height: 100vh;
+    min-height: 680px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80');
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Use uploaded photos as hero slides */
+  .hero-slides {
+    position: absolute;
+    inset: 0;
+    background: var(--navy);
+  }
+
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+
+  .hero-slide.active { opacity: 1; }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      rgba(20,40,65,0.82) 0%,
+      rgba(20,40,65,0.55) 50%,
+      rgba(20,40,65,0.2) 100%
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 8%;
+    max-width: 680px;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    line-height: 1.12;
+    color: white;
+    font-weight: 400;
+    margin-bottom: 28px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: #d4a870;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.82);
+    font-weight: 300;
+    line-height: 1.7;
+    margin-bottom: 44px;
+    max-width: 480px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--terracotta);
+    color: white;
+    padding: 16px 36px;
+    border: none;
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover { background: #a85d39; transform: translateY(-1px); }
+
+  .btn-secondary {
+    border: 1.5px solid rgba(255,255,255,0.55);
+    color: white;
+    padding: 16px 36px;
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: white;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.5; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--navy);
+    padding: 32px 8%;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .stat {
+    text-align: center;
+    color: white;
+  }
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-top: 6px;
+    display: block;
+  }
+
+  /* SECTION COMMON */
+  section { padding: 100px 8%; }
+
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--navy);
+    margin-bottom: 20px;
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.75;
+    max-width: 560px;
+  }
+
+  /* ABOUT */
+  .about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .about-images {
+    position: relative;
+    height: 520px;
+  }
+
+  .about-img-main {
+    position: absolute;
+    top: 0; left: 0;
+    width: 72%;
+    height: 85%;
+    object-fit: cover;
+    border-radius: 2px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+
+  .about-img-accent {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 52%;
+    height: 55%;
+    object-fit: cover;
+    border-radius: 2px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    border: 6px solid var(--cream);
+  }
+
+  .about-tag {
+    position: absolute;
+    bottom: 115px;
+    left: -20px;
+    background: var(--terracotta);
+    color: white;
+    padding: 12px 20px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    box-shadow: 0 8px 24px rgba(196,113,74,0.4);
+  }
+
+  .about-text { }
+
+  .about-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 40px;
+  }
+
+  .about-feature {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .feature-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(30,58,95,0.08);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1rem;
+  }
+
+  .feature-label {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--navy);
+    line-height: 1.4;
+  }
+
+  .feature-sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  /* GALLERY */
+  .gallery-section {
+    background: var(--warm-white);
+    padding: 100px 4%;
+  }
+
+  .gallery-header {
+    text-align: center;
+    max-width: 580px;
+    margin: 0 auto 60px;
+  }
+
+  .gallery-header .section-sub { margin: 0 auto; }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+    gap: 12px;
+  }
+
+  .gallery-item {
+    overflow: hidden;
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  .gallery-item:hover img { transform: scale(1.04); }
+
+  .gallery-item:nth-child(1) { grid-column: span 2; height: 340px; }
+  .gallery-item:nth-child(2) { height: 340px; }
+  .gallery-item:nth-child(3) { height: 260px; }
+  .gallery-item:nth-child(4) { grid-column: span 2; height: 260px; }
+  .gallery-item:nth-child(5) { height: 260px; }
+  .gallery-item:nth-child(6) { grid-column: span 2; height: 300px; }
+  .gallery-item:nth-child(7) { height: 300px; }
+
+  .gallery-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(30,58,95,0);
+    transition: background 0.3s;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+  }
+
+  .gallery-item:hover .gallery-overlay {
+    background: rgba(30,58,95,0.35);
+  }
+
+  .gallery-label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: white;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  .gallery-item:hover .gallery-label {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* SERVICES */
+  .services-section { background: var(--navy); }
+
+  .services-section .section-title { color: white; }
+  .services-section .section-sub { color: rgba(255,255,255,0.55); }
+  .services-section .section-eyebrow { color: var(--gold); }
+
+  .services-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 60px;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .service-card {
+    background: rgba(255,255,255,0.04);
+    padding: 44px 36px;
+    border: 1px solid rgba(255,255,255,0.07);
+    transition: background 0.3s;
+  }
+
+  .service-card:hover { background: rgba(255,255,255,0.08); }
+
+  .service-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 600;
+    color: rgba(184,149,74,0.25);
+    line-height: 1;
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  .service-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: white;
+    margin-bottom: 14px;
+    font-weight: 400;
+  }
+
+  .service-desc {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.75;
+  }
+
+  .service-price {
+    margin-top: 28px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+
+  /* PROCESS */
+  .process-section {
+    background: var(--cream);
+  }
+
+  .process-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .process-steps {
+    margin-top: 20px;
+  }
+
+  .process-step {
+    display: flex;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .process-step:last-child { border-bottom: none; }
+
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: rgba(30,58,95,0.15);
+    font-weight: 600;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 40px;
+    padding-top: 2px;
+  }
+
+  .step-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  .step-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .process-image {
+    position: sticky;
+    top: 120px;
+  }
+
+  .process-img-wrap {
+    position: relative;
+  }
+
+  .process-img-wrap img {
+    width: 100%;
+    height: 480px;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+
+  .process-badge {
+    position: absolute;
+    bottom: -24px;
+    right: -24px;
+    background: var(--terracotta);
+    color: white;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 12px 32px rgba(196,113,74,0.4);
+  }
+
+  .badge-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .badge-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    line-height: 1.3;
+    margin-top: 4px;
+  }
+
+  /* TESTIMONIALS */
+  .testimonials-section {
+    background: var(--warm-white);
+  }
+
+  .testimonials-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .testimonials-header .section-sub { margin: 0 auto; text-align: center; }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .testimonial-card {
+    background: white;
+    padding: 36px 32px;
+    border-radius: 2px;
+    position: relative;
+  }
+
+  .quote-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    color: rgba(30,58,95,0.1);
+    line-height: 1;
+    position: absolute;
+    top: 16px;
+    left: 28px;
+  }
+
+  .testimonial-text {
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.8;
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    margin-top: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .testimonial-author {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .author-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .author-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--navy);
+  }
+
+  .author-detail {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .stars {
+    color: var(--gold);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    margin-top: 8px;
+  }
+
+  /* PET SECTION */
+  .mascot-bar {
+    background: var(--navy);
+    padding: 60px 8%;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    flex-wrap: wrap;
+  }
+
+  .mascot-img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--gold);
+    flex-shrink: 0;
+  }
+
+  .mascot-text { flex: 1; min-width: 280px; }
+
+  .mascot-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: white;
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+
+  .mascot-text p {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.95rem;
+    line-height: 1.75;
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 120px 8%;
+    text-align: center;
+    background: var(--cream);
+  }
+
+  .cta-section .section-title {
+    max-width: 640px;
+    margin: 0 auto 20px;
+  }
+
+  .cta-section .section-sub {
+    max-width: 480px;
+    margin: 0 auto 48px;
+    text-align: center;
+  }
+
+  .cta-form {
+    display: flex;
+    gap: 12px;
+    max-width: 500px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .cta-input {
+    flex: 1;
+    min-width: 240px;
+    padding: 16px 20px;
+    border: 1.5px solid rgba(30,58,95,0.2);
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    background: white;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .cta-input:focus { border-color: var(--terracotta); }
+  .cta-input::placeholder { color: var(--muted); }
+
+  /* FOOTER */
+  footer {
+    background: var(--deep-blue);
+    padding: 60px 8% 32px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+
+  .footer-brand .logo {
+    font-size: 1.6rem;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .footer-tagline {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.4);
+    max-width: 220px;
+  }
+
+  .footer-col h4 {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  .footer-col a {
+    display: block;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 0.88rem;
+    margin-bottom: 10px;
+    transition: color 0.2s;
+  }
+
+  .footer-col a:hover { color: rgba(255,255,255,0.9); }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.78rem;
+  }
+
+  /* LIGHTBOX */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+
+  .lightbox.open { display: flex; }
+
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 2px;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 20px; right: 24px;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  .lightbox-close:hover { opacity: 1; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .about { grid-template-columns: 1fr; }
+    .about-images { height: 360px; order: -1; }
+    .services-grid { grid-template-columns: 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .process-inner { grid-template-columns: 1fr; }
+    .process-image { position: static; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; }
+    .gallery-item:nth-child(1), .gallery-item:nth-child(4), .gallery-item:nth-child(6) { grid-column: span 1; }
+    .nav-links { display: none; }
+    .footer-top { flex-direction: column; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">Cozy Home</a>
+  <ul class="nav-links">
+    <li><a href="#gallery">Portfolio</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Our Process</a></li>
+    <li><a href="#contact" class="nav-cta">Get a Quote</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-slides">
+    <!-- Slides will be set by JS using inline styles -->
+    <div class="hero-slide active" style="background-image: url('IMG_0277.JPG')"></div>
+    <div class="hero-slide" style="background-image: url('IMG_0280.JPG')"></div>
+    <div class="hero-slide" style="background-image: url('IMG_0272.JPG')"></div>
+    <div class="hero-slide" style="background-image: url('IMG_0285.JPG')"></div>
   </div>
-  <div class="bt-stage" id="bt-stage"></div>
-  <div class="bt-stats" id="bt-stats"></div>
-  <div class="bt-foot">A sales-enablement journey · MEDDICC · Teamwork · Best-in-market BigID</div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="hero-eyebrow">Professional Home Staging</span>
+    <h1>Homes that feel like <em>home</em> — before the offer arrives</h1>
+    <p>We transform lived-in spaces into properties buyers fall in love with at first glance. Every room tells a story. We make it the right one.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">Request a Consultation</a>
+      <a href="#gallery" class="btn-secondary">View Our Work</a>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <span class="stat-number">14</span>
+    <span class="stat-label">Days Average on Market</span>
+  </div>
+  <div class="stat">
+    <span class="stat-number">97%</span>
+    <span class="stat-label">Sell at or Above Asking</span>
+  </div>
+  <div class="stat">
+    <span class="stat-number">400+</span>
+    <span class="stat-label">Homes Staged</span>
+  </div>
+  <div class="stat">
+    <span class="stat-number">8.2%</span>
+    <span class="stat-label">Higher Sale Price on Average</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about">
+    <div class="about-images">
+      <img class="about-img-main" src="IMG_0278.JPG" alt="Staged living room with fireplace" loading="lazy">
+      <img class="about-img-accent" src="IMG_0280.JPG" alt="Staged outdoor deck" loading="lazy">
+      <div class="about-tag">Portland, Oregon</div>
+    </div>
+    <div class="about-text">
+      <span class="section-eyebrow">About Cozy Home</span>
+      <h2 class="section-title">We stage with intention — not just furniture</h2>
+      <p class="section-sub">Staging isn't decorating. It's strategic storytelling. We look at every room through the lens of a buyer standing in the doorway for the first time, and we design for that moment.</p>
+      <p class="section-sub" style="margin-top: 18px;">From a cozy reading nook to an outdoor deck that invites you to linger, we highlight what makes each home genuinely special — then get out of the way and let the space speak.</p>
+      <div class="about-features">
+        <div class="about-feature">
+          <div class="feature-icon">🎨</div>
+          <div>
+            <div class="feature-label">Color-Forward Staging</div>
+            <div class="feature-sub">Bold yet buyer-friendly palettes</div>
+          </div>
+        </div>
+        <div class="about-feature">
+          <div class="feature-icon">📸</div>
+          <div>
+            <div class="feature-label">Photo-Ready Styling</div>
+            <div class="feature-sub">Every angle designed for listing photos</div>
+          </div>
+        </div>
+        <div class="about-feature">
+          <div class="feature-icon">🏡</div>
+          <div>
+            <div class="feature-label">Whole-Home Approach</div>
+            <div class="feature-sub">From entry to outdoor living</div>
+          </div>
+        </div>
+        <div class="about-feature">
+          <div class="feature-icon">⚡</div>
+          <div>
+            <div class="feature-label">Fast Turnaround</div>
+            <div class="feature-sub">Ready for photos within 48 hours</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section" id="gallery">
+  <div class="gallery-header">
+    <span class="section-eyebrow">Portfolio</span>
+    <h2 class="section-title">Recent Transformations</h2>
+    <p class="section-sub">A look inside homes we've helped sell — faster and for more.</p>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item" onclick="openLightbox('IMG_0277.JPG')">
+      <img src="IMG_0277.JPG" alt="Living room with fireplace and blue accent wall" loading="lazy">
+      <div class="gallery-overlay"><span class="gallery-label">Living Room</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('IMG_0272.JPG')">
+      <img src="IMG_0272.JPG" alt="Music room with piano" loading="lazy">
+      <div class="gallery-overlay"><span class="gallery-label">Music Room</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('IMG_0273.JPG')">
+      <img src="IMG_0273.JPG" alt="Dining room" loading="lazy">
+      <div class="gallery-overlay"><span class="gallery-label">Dining Room</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('IMG_0280.JPG')">
+      <img src="IMG_0280.JPG" alt="Outdoor deck with fire pit" loading="lazy">
+      <div class="gallery-overlay"><span class="gallery-label">Outdoor Living</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('IMG_0283.JPG')">
+      <img src="IMG_0283.JPG" alt="Primary bathroom" loading="lazy">
+      <div class="gallery-overlay"><span class="gallery-label">Primary Bath</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('IMG_0285.JPG')">
+      <img src="IMG_0285.JPG" alt="Primary bedroom" loading="lazy">
+      <div class="gallery-overlay"><span class="gallery-label">Primary Bedroom</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('IMG_0276.JPG')">
+      <img src="IMG_0276.JPG" alt="Kitchen and dining area" loading="lazy">
+      <div class="gallery-overlay"><span class="gallery-label">Kitchen</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+  <div class="services-header">
+    <div>
+      <span class="section-eyebrow">What We Offer</span>
+      <h2 class="section-title">Services</h2>
+      <p class="section-sub">Flexible packages built around your timeline and your home.</p>
+    </div>
+    <a href="#contact" class="btn-primary">Get a Quote</a>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <span class="service-num">01</span>
+      <div class="service-name">Consultation & Walkthrough</div>
+      <p class="service-desc">We walk your home room by room and deliver a prioritized action plan — what to move, what to store, what to highlight. Perfect if you want to DIY with expert direction.</p>
+      <div class="service-price">Starting at $250</div>
+    </div>
+    <div class="service-card">
+      <span class="service-num">02</span>
+      <div class="service-name">Partial Staging</div>
+      <p class="service-desc">We focus on the rooms buyers care most about: living room, primary suite, kitchen, and entry. We bring in furniture, art, and accessories to complete the look.</p>
+      <div class="service-price">Starting at $1,800</div>
+    </div>
+    <div class="service-card">
+      <span class="service-num">03</span>
+      <div class="service-name">Full Home Staging</div>
+      <p class="service-desc">A complete transformation from curb to backyard. We handle everything — furniture, textiles, lighting, plants, and art — so your listing looks like a magazine spread.</p>
+      <div class="service-price">Starting at $3,500</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="process-inner">
+    <div>
+      <span class="section-eyebrow">How It Works</span>
+      <h2 class="section-title">Simple. Fast. Effective.</h2>
+      <p class="section-sub">From first call to listing photos in as little as five days.</p>
+      <div class="process-steps">
+        <div class="process-step">
+          <span class="step-num">1</span>
+          <div>
+            <div class="step-title">Free Phone Consultation</div>
+            <p class="step-desc">We start with a 20-minute call to understand your home, your timeline, and your goals. No pressure, just conversation.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">2</span>
+          <div>
+            <div class="step-title">On-Site Assessment</div>
+            <p class="step-desc">We walk your home and build a customized staging plan. You'll receive a clear scope and investment estimate within 24 hours.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">3</span>
+          <div>
+            <div class="step-title">Staging Day</div>
+            <p class="step-desc">Our team arrives with everything — furniture, art, décor — and transforms your space. Most homes are complete in one day.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-num">4</span>
+          <div>
+            <div class="step-title">List & Sell</div>
+            <p class="step-desc">Your home goes on the market looking its absolute best. We stay in contact and de-stage within days of closing.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="process-image">
+      <div class="process-img-wrap">
+        <img src="IMG_0275.JPG" alt="Beautifully staged kitchen" loading="lazy">
+        <div class="process-badge">
+          <div class="badge-num">48h</div>
+          <div class="badge-label">Photo Ready</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section" id="testimonials">
+  <div class="testimonials-header">
+    <span class="section-eyebrow">Client Stories</span>
+    <h2 class="section-title">What sellers say</h2>
+    <p class="section-sub">Real results from real homeowners across the Portland metro area.</p>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <span class="quote-mark">"</span>
+      <p class="testimonial-text">We had three offers in the first weekend — all above asking. The staging made our home look like a completely different (and much more expensive) house.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">MK</div>
+        <div>
+          <div class="author-name">Marcus & Kim T.</div>
+          <div class="author-detail">Beaverton, OR — Sold in 4 days</div>
+          <div class="stars">★★★★★</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <span class="quote-mark">"</span>
+      <p class="testimonial-text">I was skeptical about spending money before selling, but Cozy Home paid for itself ten times over. Our sale price came in $31,000 over list.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">SR</div>
+        <div>
+          <div class="author-name">Sarah R.</div>
+          <div class="author-detail">Lake Oswego, OR — Sold in 6 days</div>
+          <div class="stars">★★★★★</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <span class="quote-mark">"</span>
+      <p class="testimonial-text">The team was professional, fast, and genuinely talented. They saw potential in rooms I'd lived with for years and simply stopped noticing.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">JL</div>
+        <div>
+          <div class="author-name">James L.</div>
+          <div class="author-detail">Portland, OR — Sold in 9 days</div>
+          <div class="stars">★★★★★</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MASCOT / PET -->
+<div class="mascot-bar">
+  <img src="IMG_0286.JPG" class="mascot-img" alt="The Cozy Home mascot" loading="lazy">
+  <div class="mascot-text">
+    <h3>Every home has a personality. We help it shine.</h3>
+    <p>This handsome pup was kind enough to remind us that the best homes have soul — warmth you can feel the moment you step through the door. That's exactly what we bring to every staging project. A sense of life well-lived, ready to be passed on to someone new.</p>
+  </div>
+</div>
+
+<!-- CTA / CONTACT -->
+<section class="cta-section" id="contact">
+  <span class="section-eyebrow" style="display:block;text-align:center">Ready to Sell?</span>
+  <h2 class="section-title">Let's get your home market-ready</h2>
+  <p class="section-sub">Drop your email and we'll reach out within one business day to schedule a free consultation.</p>
+  <div class="cta-form">
+    <input type="email" class="cta-input" placeholder="your@email.com">
+    <button class="btn-primary" onclick="handleSubmit()">Get Started</button>
+  </div>
+  <p style="margin-top:20px; font-size:0.8rem; color:var(--muted);">Or call us directly: <strong style="color:var(--navy)">(503) 555-0192</strong></p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="logo" style="color:white">Cozy Home</a>
+      <p class="footer-tagline">Professional home staging for the Portland metro area.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <a href="#services">Consultation</a>
+      <a href="#services">Partial Staging</a>
+      <a href="#services">Full Home Staging</a>
+      <a href="#services">Vacant Home Staging</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#about">About Us</a>
+      <a href="#gallery">Portfolio</a>
+      <a href="#testimonials">Reviews</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="tel:5035550192">(503) 555-0192</a>
+      <a href="mailto:hello@cozyhome.com">hello@cozyhome.com</a>
+      <a href="#">Portland, Oregon</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Cozy Home Staging. All rights reserved.</span>
+    <span>Made with care in Portland, OR 🌲</span>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close" onclick="closeLightbox()">✕</span>
+  <img id="lightbox-img" src="" alt="">
 </div>
 
 <script>
-(function(){
-  const stage = document.getElementById('bt-stage');
-  const statsEl = document.getElementById('bt-stats');
-  const locEl = document.getElementById('bt-loc');
-  const root = document.getElementById('bt');
-
-  // ---- Game state ----
-  const START = ()=>({
-    pipeline: 78,     // deal health / pipeline confidence
-    time: 100,        // quarter clock — runs down
-    champion: 35,     // strength of your internal champion
-    rep: 50,          // your team's credibility with the buyer
-    meddicc: {M:0,E:0,Dc:0,Dp:0,I:0,C:0,Cc:0}, // scored as you go
-    leg: 0,
-    log: []
+  // Nav scroll effect
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
   });
-  let S = START();
 
-  const MED_LABELS = {
-    M:'Metrics', E:'Economic Buyer', Dc:'Decision Criteria',
-    Dp:'Decision Process', I:'Identify Pain', C:'Champion', Cc:'Competition'
-  };
+  // Hero slideshow
+  const slides = document.querySelectorAll('.hero-slide');
+  let current = 0;
+  setInterval(() => {
+    slides[current].classList.remove('active');
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('active');
+  }, 4500);
 
-  const LEGS = [
-    'Independence: Prospecting',
-    'River Crossing: Discovery',
-    "Chimney Rock: Economic Buyer",
-    'Fort Laramie: Technical Win',
-    'The Mountains: Procurement & Legal',
-    'The Dalles: Negotiation',
-    "Oregon City: Closed-Won"
-  ];
+  // Lightbox
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
 
-  // ---- helpers ----
-  const clamp=(n)=>Math.max(0,Math.min(100,Math.round(n)));
-  function apply(d){
-    if(!d) return;
-    for(const k in d){
-      if(k==='meddicc'){ for(const m in d.meddicc){ S.meddicc[m]=clamp(S.meddicc[m]+d.meddicc[m]); } }
-      else if(k in S){ S[k]=clamp(S[k]+d[k]); }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  // Form
+  function handleSubmit() {
+    const input = document.querySelector('.cta-input');
+    if (input.value && input.value.includes('@')) {
+      input.value = '';
+      input.placeholder = '✓ We\'ll be in touch soon!';
+      input.style.borderColor = '#6a7c5b';
+    } else {
+      input.style.borderColor = '#c4714a';
+      input.placeholder = 'Please enter a valid email';
     }
   }
-  function meter(v){
-    const cls = v<25?'crit':v<50?'warn':'';
-    return `<div class="bt-meter ${cls}"><i style="width:${v}%"></i></div>`;
-  }
-  function renderStats(){
-    const rows=[['PIPELINE',S.pipeline],['QTR TIME',S.time],['CHAMPION',S.champion],['CREDIBILITY',S.rep]];
-    statsEl.innerHTML = rows.map(([l,v])=>
-      `<div class="bt-stat"><div class="lbl">${l}</div><div class="val">${v}</div>${meter(v)}</div>`
-    ).join('');
-  }
-  function progress(){
-    let p='<div class="bt-progress">';
-    for(let i=0;i<LEGS.length;i++){
-      const c = i<S.leg?'done':i===S.leg?'now':'';
-      p+=`<div class="bt-pip ${c}" title="${LEGS[i]}"></div>`;
-    }
-    return p+'</div>';
-  }
-  function medStrip(){
-    const parts=Object.keys(MED_LABELS).map(k=>{
-      const v=S.meddicc[k];
-      const col = v>=2?'var(--green)':v>=1?'var(--amber)':'var(--dim)';
-      return `<span style="color:${col}">${k}<sub style="opacity:.7">${v}</sub></span>`;
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
-    return `<div class="bt-meddicc"><b>MEDDICC:</b> ${parts.join(' · ')} <span style="opacity:.6">(M·E·Dc·Dp·I·C·Cc — fill these or the deal slips)</span></div>`;
-  }
-
-  function checkDeath(){
-    if(S.pipeline<=0) return DEATH.pipeline;
-    if(S.time<=0) return DEATH.time;
-    if(S.champion<=0) return DEATH.champion;
-    if(S.rep<=0) return DEATH.rep;
-    return null;
-  }
-
-  function go(node){
-    root.classList.remove('bt-death','bt-win');
-    if(typeof node==='function') node=node();
-    // resolve a death from stat depletion before showing a normal node
-    if(node.type!=='death' && node.type!=='win'){
-      const d=checkDeath();
-      if(d){ return go(d); }
-    }
-    renderStats();
-    locEl.textContent = node.loc || ('— '+(LEGS[S.leg]||'').toUpperCase()+' —');
-
-    let html='';
-    if(node.type==='death') root.classList.add('bt-death');
-    if(node.type==='win') root.classList.add('bt-win');
-    if(node.progress!==false && node.type!=='death' && node.type!=='win') html+=progress();
-    html+=`<div class="bt-title">${node.title}</div>`;
-    if(node.sub) html+=`<div class="bt-sub">${node.sub}</div>`;
-    if(node.art) html+=`<div class="bt-art">${node.art}</div>`;
-    if(node.showMed) html+=medStrip();
-    if(node.body) html+=`<div class="bt-body">${node.body}</div>`;
-    if(node.talk) html+=`<div class="bt-talk">🗣 <b>Discuss:</b> ${node.talk}</div>`;
-
-    html+='<div class="bt-choices">';
-    (node.choices||[]).forEach((c,i)=>{
-      const key = c.key || String.fromCharCode(65+i);
-      html+=`<button class="bt-btn" data-i="${i}"><span class="k">[${key}]</span>${c.text}</button>`;
-    });
-    html+='</div>';
-    stage.innerHTML=html;
-
-    stage.querySelectorAll('.bt-btn').forEach(b=>{
-      b.onclick=()=>{
-        const c=node.choices[+b.dataset.i];
-        if(c.effect) apply(c.effect);
-        if(typeof c.next==='function'){ go(c.next()); }
-        else if(c.next){ go(NODES[c.next]); }
-      };
-    });
-    stage.scrollIntoView({behavior:'smooth',block:'nearest'});
-  }
-
-  // ---- ASCII ----
-  const WAGON =
-`        __________
-   ____//  BigID  \\\\___
-  /  _|_ ___________ _|_  \\
- |  / o \\           / o \\  |
-  \\_\\___/___________\\___/_/`;
-  const RIVER =
-` ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- ~ DISCOVERY RIVER · deep ~
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~`;
-  const GRAVE =
-`        _______
-       /       \\
-      |  R.I.P. |
-      |  DEAL   |
-      |  #4471  |
-   ___|_________|___`;
-  const SUMMIT =
-`        /\\        /\\
-       /  \\  /\\  /  \\
-      / OREGON CITY \\
-     /________________\\`;
-
-  // ---- DEATH screens ----
-  const DEATH = {
-    pipeline:{type:'death',title:'YOU HAVE DIED OF DYSENTERY',sub:'(the deal rotted from the inside)',art:GRAVE,
-      body:`Your <span class="bad">pipeline confidence hit zero.</span> The opportunity was never real — happy ears, no pain, no metrics. You forecasted it three quarters running and it quietly slid into the void.<br><br>The deal you couldn't qualify out is the deal that kills your number.`,
-      choices:[{text:'Circle the wagons — try again',next:'start'}]},
-    time:{type:'death',title:'YOU RAN OUT OF QUARTER',sub:'(the snow came early)',art:GRAVE,
-      body:`The <span class="bad">clock hit zero before you reached close.</span> No compelling event, no mutual action plan, so the buyer felt no urgency — and your champion's budget got reallocated.<br><br>"No decision" beat you. It usually does.`,
-      choices:[{text:'Re-pack the wagon — try again',next:'start'}]},
-    champion:{type:'death',title:'YOUR CHAMPION WAS LOST TO A SNAKEBITE',sub:'(they left for a startup in week 6)',art:GRAVE,
-      body:`Your <span class="bad">champion's influence collapsed.</span> You had a coach who liked you — but never tested whether they could actually sell internally, never armed them, never built a second thread.<br><br>Single-threaded deals die when one person leaves.`,
-      talk:`For our biggest open deal: is our champion a real champion — power, pain, and a plan — or just a friendly contact? <b>Who's our backup thread?</b>`,
-      choices:[{text:'Find a new trail — try again',next:'start'}]},
-    rep:{type:'death',title:'YOU LOST THE BUYER\'S TRUST AT THE FORD',sub:'(you oversold the demo)',art:GRAVE,
-      body:`Your <span class="bad">credibility ran out.</span> You pitched features the buyer never asked for, fumbled a security question, and let competition define the category. The buyer stopped returning calls.<br><br>In data security, trust IS the product. Lose it and the POC never starts.`,
-      choices:[{text:'Earn it back — try again',next:'start'}]}
-  };
-
-  // ================= NODES =================
-  const NODES = {};
-
-  NODES.start = ()=>{ S=START(); return NODES.outfit; };
-
-  NODES.outfit = {
-    loc:'— OUTFITTING AT INDEPENDENCE —', progress:false,
-    title:'THE BIGID TRAIL',
-    sub:'2,000 miles from first call to Closed-Won. Most wagons don\'t make it.',
-    art:WAGON,
-    body:`You are a BigID account team setting out across the enterprise sales frontier. Your wagon carries one thing: a <span class="hl">$1.2M data security & AI governance opportunity</span> at a Fortune 500 account.<br><br>Ahead lie rivers, mountains, and rival wagons. You'll manage four things — pipeline confidence, the quarter clock, your champion, and your credibility — and quietly fill in the <span class="hl">MEDDICC</span> strip up top. Run them dry and the trail swallows you.<br><br>Pick who's driving the wagon. (No mechanical advantage — just a different lens.)`,
-    showMed:true,
-    choices:[
-      {text:'The Banker — an AE who lives in business value',effect:{rep:+4},next:'leg1'},
-      {text:'The Carpenter — an SE who wins on proof',effect:{pipeline:+4},next:'leg1'},
-      {text:'The Wagon Leader — a manager coaching the team',effect:{champion:+4},next:'leg1'}
-    ]
-  };
-
-  // ---------- LEG 1: PROSPECTING / IDENTIFY PAIN ----------
-  NODES.leg1 = ()=>{ S.leg=0; return {
-    showMed:true,
-    title:'INDEPENDENCE — PROSPECTING',
-    sub:'The wagon rolls out. A buyer appears on the horizon.',
-    body:`A CISO at a global bank replies to your outreach. On the first call she's blunt: <span class="hl">"We're fine — we already have a DLP tool and a CSPM. Why are we talking?"</span><br><br>You've got about ninety seconds before she decides whether there's a second call.`,
-    choices:[
-      {text:'Walk her through what BigID does — show the platform that earned the meeting',
-        effect:{rep:-8,time:-6,pipeline:-4},
-        next:()=>({showMed:true,title:'TOO FAST AT THE FORD',body:`You pitched capability before you understood her world. She nodded politely and went dark for two weeks. <span class="bad">No pain surfaced; credibility dinged.</span> Capability with no pain attached is just noise.`,choices:[{text:'Continue, wiser',next:'leg1b'}]})},
-      {text:'Push on the gap: "When Copilot indexes data your DLP can\'t classify, who owns that risk?"',
-        effect:{meddicc:{I:+2},pipeline:+6,rep:+5},
-        next:()=>({showMed:true,title:'A NERVE IS HIT',body:`The question lands in a place her current tools don't reach. She pauses, then starts talking about an AI rollout that's making her nervous. <span class="good">You've found a thread to pull.</span>`,choices:[{text:'Continue',next:'leg1b'}]})},
-      {text:'Respect her time — send a relevant case study and propose reconnecting next month',
-        effect:{time:-10,pipeline:-2},
-        next:()=>({showMed:true,title:'THE TRAIL GOES COLD',body:`Courteous and safe. But a month bleeds off the quarter clock, the case study goes unread, and nothing in her week now demands she call you back. <span class="bad">Time lost, momentum gone.</span>`,choices:[{text:'Continue',next:'leg1b'}]})}
-    ]
-  };}
-
-  NODES.leg1b = {
-    showMed:true,
-    title:'A PAIN EMERGES',
-    body:`Probing pays off. The bank just had an internal audit flag <span class="hl">sensitive data sprawled across 2.5 petabytes</span> of cloud and on-prem, and nobody can say who can access what. Their legacy tools pattern-match with RegEx and miss most of it.<br><br>BigID's ML/NLP classification spans 100+ languages and 500+ sources across structured and unstructured, cloud and mainframe — but the CISO hasn't called this a priority yet. She's interested, not committed.`,
-    choices:[
-      {text:'Pin down the cost of the problem — audit exposure, analyst hours, breach risk',
-        effect:{meddicc:{M:+2,I:+1},pipeline:+6},
-        next:()=>({showMed:true,title:'THE PROBLEM GETS A PRICE TAG',body:`Together you put real numbers to the pain. A vague worry becomes a board-level figure — and now there's something a budget can be measured against. <span class="good">Pain quantified.</span>`,choices:[{text:'Continue',next:'leg2'}]})},
-      {text:'Reinforce confidence — she\'s engaged, so anchor on BigID being the Forrester Wave Leader',
-        effect:{rep:-3,pipeline:-2},
-        next:()=>({showMed:true,title:'A TROPHY WITH NO HOOK',body:`The analyst proof is real, but with no quantified pain to attach it to, it reads as a brag. She files it away. <span class="bad">Small credibility cost</span> — proof points land far harder once the buyer owns the problem.`,talk:`Proof points (analyst rankings, logos, awards) are powerful — but timing is everything. When have we deployed great proof too early and watched it fall flat?`,choices:[{text:'Continue',next:'leg2'}]})}
-    ]
-  };
-
-  // ---------- LEG 2: DISCOVERY RIVER ----------
-  NODES.leg2 = ()=>{ S.leg=1; return {
-    showMed:true,
-    title:'DISCOVERY RIVER',
-    sub:'The water is high. How will you cross?',
-    art:RIVER,
-    body:`The deal has to cross from "interesting" to "qualified." The bank is eager and the quarter is moving — they're already asking about a proof-of-concept. How does the team get to the other side?`,
-    choices:[
-      {text:'Seize the momentum — lock the POC for next week while they\'re hot',
-        effect:{pipeline:-12,time:+4,rep:-6},
-        next:()=>({showMed:true,title:'THE WAGON TIPS',body:`You jumped into a POC with no agreed success criteria. The SE is now burning cycles proving things nobody will score. <span class="bad">Pipeline and credibility down.</span> A POC without decision criteria is a science fair, not a sale.`,choices:[{text:'Drag the wagon out',next:'leg2b'}]})},
-      {text:'Slow down and run structured discovery first — get their success criteria in writing',
-        effect:{meddicc:{Dc:+2,I:+1},rep:+6,time:-8},
-        next:()=>({showMed:true,title:'A SOLID CROSSING',body:`It cost you time and the buyer was briefly impatient — but you now have written criteria you'll be measured against. The crossing held. <span class="good">Decision criteria documented.</span>`,choices:[{text:'Continue',next:'leg2b'}]})},
-      {text:'Bring in reinforcements — pull an SE and Value Engineering in to co-discover',
-        effect:{meddicc:{Dc:+1,M:+1},pipeline:+8,champion:+5,time:-6},
-        next:()=>({showMed:true,title:'GUIDED ACROSS',body:`The extra horsepower surfaces criteria and value drivers you'd have missed solo — and the buyer reads the team investment as seriousness. <span class="good">Strong crossing, but you spent real resource.</span>`,choices:[{text:'Continue',next:'leg2b'}]})}
-    ]
-  };}
-
-  NODES.leg2b = {
-    showMed:true,
-    title:'A FRIENDLY FACE',
-    body:`Across the river, a Director of Data Governance takes real interest. She's been fighting internally for budget to fix exactly this, and she sees BigID as her vehicle. She likes you, she returns your calls, and she's the easiest person to work with at the account. <span class="hl">She could be your champion.</span>`,
-    choices:[
-      {text:'Protect the relationship — keep building with her, she\'s your strongest ally',
-        effect:{champion:+4,pipeline:-4},
-        next:()=>({showMed:true,title:'ONE OX PULLING',body:`The relationship deepens and it feels safe — but the entire deal now rides on one person you've never seen sell internally. <span class="bad">You're single-threaded.</span> If she changes jobs, the wagon stops.`,choices:[{text:'Continue',next:'leg3'}]})},
-      {text:'Put her to the test — ask her to get you 30 minutes with the economic buyer',
-        effect:{meddicc:{C:+2},champion:+12,pipeline:+4},
-        next:()=>({showMed:true,title:'A REAL CHAMPION REVEALED',body:`She doesn't flinch — she gets you the meeting within the week and coaches you on the room. A coach who can open doors and spend political capital is the real thing. <span class="good">Champion confirmed.</span>`,talk:`The only way to know if a "champion" is real is to ask them to do something costly. What's the test we use to separate a true champion from a friendly coach?`,choices:[{text:'Continue',next:'leg3'}]})}
-    ]
-  };
-
-  // ---------- LEG 3: CHIMNEY ROCK / ECONOMIC BUYER ----------
-  NODES.leg3 = ()=>{ S.leg=2; return {
-    showMed:true,
-    title:'CHIMNEY ROCK — THE ECONOMIC BUYER',
-    sub:'A landmark you can\'t go around.',
-    body:`Your champion gets you 25 minutes with the <span class="hl">CFO and CISO together</span> — the people who actually control the budget. The CFO opens by saying she's heard good things and wants to "see what it does." Many wagons never reach this room. Most that do, waste it.`,
-    choices:[
-      {text:'Give them what they asked for — a crisp walkthrough of the platform\'s capabilities',
-        effect:{rep:-10,pipeline:-8,meddicc:{E:+0}},
-        next:()=>({showMed:true,title:'THE CFO CHECKS OUT',body:`You took "show me what it does" literally. Ten minutes into capabilities, the CFO is on her phone. She buys outcomes and risk reduction, not screens. <span class="bad">Credibility hit — and you stood near the economic buyer without ever engaging her.</span>`,choices:[{text:'Continue',next:'leg3b'}]})},
-      {text:'Translate to her language — one platform retiring four tools, audit-ready, AI risk contained',
-        effect:{meddicc:{E:+2,M:+1},pipeline:+10,rep:+8},
-        next:()=>({showMed:true,title:'THE CFO LEANS IN',body:`You reframed the room around consolidation, risk, and ROI. The CFO starts doing math out loud. <span class="good">You connected with the economic buyer on her terms.</span> The risk: you led with your answer before fully hearing hers.`,choices:[{text:'Continue',next:'leg3b'}]})},
-      {text:'Turn it around — ask the CFO what would have to be true for this to get funded this year',
-        effect:{meddicc:{E:+2,Dp:+1},champion:+6,pipeline:+6},
-        next:()=>({showMed:true,title:'THE BUYER WRITES YOUR PLAN',body:`Instead of pitching, you got the CFO to describe her own funding bar and approval path — in her words. <span class="good">You now understand the economic buyer and the decision process.</span> The risk: a quieter meeting that didn't show off the solution.`,talk:`Asking instead of telling can feel like giving up airtime in a hard-won exec meeting. What makes that a confident move rather than a passive one?`,choices:[{text:'Continue',next:'leg3b'}]})}
-    ]
-  };}
-
-  NODES.leg3b = {
-    showMed:true,
-    title:'RIVAL WAGONS ON THE RIDGE',
-    body:`Word spreads that the bank is evaluating, and <span class="hl">two competitors appear</span> — a sharp single-feature DSPM startup that's priced low, and the legacy DLP incumbent the security team already knows. The CISO, who seems to be warming to the incumbent, asks the question every rep dreads: <span class="hl">"Why you and not them?"</span>`,
-    choices:[
-      {text:'Draw the contrast directly — name where each competitor falls short',
-        effect:{rep:-9,pipeline:-5},
-        next:()=>({showMed:true,title:'MUD ON YOUR OWN BOOTS',body:`Going after the rivals by name made the CISO defensive — she'd personally shortlisted them. The room cooled. <span class="bad">Credibility down.</span> You sold the grudge instead of the gap.`,choices:[{text:'Continue',next:'leg4'}]})},
-      {text:'Reframe the category — make consolidation and remediation the criteria they score on',
-        effect:{meddicc:{Cc:+2,Dc:+1},pipeline:+8,rep:+6},
-        next:()=>({showMed:true,title:'YOU SET THE RULES',body:`Rather than rank vendors, you changed what "good" means: one platform spanning DSPM, AISPM, DLP, access, privacy and remediation at petabyte scale — not point tools that only flag problems. The incumbent suddenly looks narrow. <span class="good">You shaped the decision criteria around your strengths.</span>`,talk:`The strongest competitive move is often changing the scorecard rather than winning the buyer's existing one. What's the one criterion we'd most want every competitive deal scored on — and can everyone here say our differentiation the same way in one sentence?`,choices:[{text:'Continue',next:'leg4'}]})},
-      {text:'Invest in your champion — hand her a one-page battlecard to fight for you internally',
-        effect:{meddicc:{Cc:+1,C:+1},champion:+8,pipeline:+5},
-        next:()=>({showMed:true,title:'YOUR CHAMPION GETS ARMED',body:`You don't win the room yourself today — but your champion now carries a crisp differentiation story into every meeting you're not in. <span class="good">The fight continues when you're not there.</span> The trade-off: you didn't directly reset the CISO's leaning yourself.`,choices:[{text:'Continue',next:'leg4'}]})}
-    ]
-  };
-
-  // ---------- LEG 4: FORT LARAMIE / TECHNICAL WIN ----------
-  NODES.leg4 = ()=>{ S.leg=3; return {
-    showMed:true,
-    title:'FORT LARAMIE — THE TECHNICAL WIN',
-    sub:'Resupply, repair, and prove it works.',
-    body:`Time for the POC. The bank wants proof on their own messy data — and the trail has a way of throwing something unexpected at you right when the stakes are highest.`,
-    choices:[{text:'Roll the dice — see what the trail brings',next:()=>randomEvent()}]
-  };};
-
-  function randomEvent(){
-    const events=[
-      {title:'OXEN WANDERED OFF',body:`Your lead SE gets pulled onto another fire drill mid-POC. Momentum slips while you scramble to cover.`,
-        eff:{time:-8,pipeline:-4}},
-      {title:'A BLESSING AT THE FORT',body:`BigID's agentless, cloud-native deployment stands the POC up with no heavy agents and no data backhaul. The security team is visibly relieved it runs locally.`,
-        eff:{rep:+8,pipeline:+8,meddicc:{Dc:+1}}},
-      {title:'A HARD SECURITY QUESTION',body:`The bank's architect probes how classification handles 100+ languages and unstructured data at petabyte scale. It's a deep question — and one the team is ready for.`,
-        eff:{rep:+6,pipeline:+5,meddicc:{Cc:+1}}},
-      {title:'SCOPE CREEP STORM',body:`The champion keeps adding "just one more" use case to the POC. The success criteria are starting to blur.`,
-        eff:{time:-6,pipeline:-3}}
-    ];
-    const e = events[Math.floor(Math.random()*events.length)];
-    apply(e.eff);
-    return {showMed:true,title:e.title,sub:'— RANDOM EVENT —',body:e.body,talk:e.talk,
-      choices:[{text:'Press on to the POC review',next:'leg4b'}]};
-  }
-
-  NODES.leg4b = {
-    showMed:true,
-    title:'THE POC SCORECARD',
-    body:`POC review day. The technical results are strong and the room feels warm. The champion is smiling, the architect is nodding. The team has to decide how to land the plane.`,
-    choices:[
-      {text:'Map every result line-by-line to the criteria the buyer agreed up front',
-        effect:{meddicc:{Dc:+1,M:+1},pipeline:+10,rep:+6},
-        next:()=>({showMed:true,title:'AN UNARGUABLE WIN',body:`Because the criteria were written and signed before the POC, your scorecard isn't an opinion — it's a contract they helped author. There's nothing to debate. <span class="good">Clean technical win.</span>`,choices:[{text:'Continue',next:'leg5'}]})},
-      {text:'Read the room — they\'re clearly sold, so move confidently to next steps',
-        effect:{pipeline:-6,rep:-4},
-        next:()=>({showMed:true,title:'ASSUMED, NOT PROVEN',body:`You called it a win. A week later the buyer calls it "interesting" and asks to "see a couple more things." Without a scorecard they signed, your victory was only ever your read of the room. <span class="bad">The win evaporates.</span>`,choices:[{text:'Continue',next:'leg5'}]})}
-    ]
-  };
-
-  // ---------- LEG 5: MOUNTAINS / DECISION PROCESS ----------
-  NODES.leg5 = ()=>{ S.leg=4; return {
-    showMed:true,
-    title:'THE MOUNTAINS — PROCUREMENT & LEGAL',
-    sub:'The steepest, coldest stretch. Wagons freeze here.',
-    body:`The technical win is real — now the deal has to survive <span class="hl">procurement, legal, security review, and the bank's internal approval chain.</span> Your champion is energized and a little impatient: "We're basically there, right? How do we just get this done?" The quarter is ticking.`,
-    choices:[
-      {text:'Build a mutual action plan with the buyer, working backward from a real deadline',
-        effect:{meddicc:{Dp:+2},time:+10,pipeline:+8},
-        next:()=>({showMed:true,title:'A MAP THROUGH THE PASS',body:`You and the champion lay out every step, owner, and date back from a compelling event the bank actually cares about. Suddenly the approval chain has a forcing function. <span class="good">Decision process mapped and owned jointly.</span>`,talk:`A mutual action plan only works if it's anchored to a deadline the buyer genuinely feels. What real compelling events can we use on live deals — beyond our own quarter-end, which the buyer doesn't care about?`,choices:[{text:'Continue',next:'leg5b'}]})},
-      {text:'Respect their process — let procurement set the pace so you don\'t seem pushy',
-        effect:{time:-16,pipeline:-6},
-        next:()=>({showMed:true,title:'EARLY SNOW',body:`Deferring felt respectful, but procurement moves at procurement speed and nothing creates urgency. <span class="bad">Two weeks of quarter vanish</span> with no forcing function in sight.`,choices:[{text:'Continue',next:'leg5b'}]})},
-      {text:'Use your momentum — have the AE lean on the exec relationship to fast-track legal',
-        effect:{rep:-8,time:-6},
-        next:()=>({showMed:true,title:'NO PASS AROUND THE PEAK',body:`A strong relationship can't bypass a bank's control framework — and trying made you look like you didn't understand it. <span class="bad">Credibility burned</span> on a shortcut that was never there.`,choices:[{text:'Continue',next:'leg5b'}]})}
-    ]
-  };}
-
-  NODES.leg5b = {
-    showMed:true,
-    title:'THE CHAMPION IS TESTED',
-    body:`Inside the bank, a rival exec questions the purchase in a meeting you're not invited to. Your champion has to carry the BigID case alone. <span class="hl">Everything you did — or didn't do — to prepare her gets tested right now.</span>`,
-    choices:[
-    {text:'See whether your champion can hold the room',
-      next:()=>{
-        const strong = S.champion>=45;
-        apply(strong?{pipeline:+8}:{pipeline:-6,champion:-6});
-        return {showMed:true,title: strong?'THE CHAMPION HOLDS':'THE CHAMPION STUMBLES',
-          body: strong
-            ? `Your well-prepared champion defends the business case — one platform, proven ROI, audit-ready — and wins the room without you. <span class="good">The deal advances with real momentum.</span>`
-            : `Your champion fights, but she was under-armed for that level of scrutiny. The rival exec plants doubt that sticks. <span class="bad">The deal survives, barely, and some trust leaks out.</span>`,
-          talk: strong
-            ? `She won a room you couldn't enter. What specifically did we give her that made that possible — and could we make that a repeatable play for every champion?`
-            : `She lost ground in a room we couldn't enter. Looking back, what would we have armed her with if we'd known that meeting was coming? How do we find out those meetings are coming?`,
-          choices:[{text:'Push to the final descent',next:'leg6'}]};
-      }}
-    ]
-  };
-
-  // ---------- LEG 6: THE DALLES / NEGOTIATION ----------
-  NODES.leg6 = ()=>{ S.leg=5; return {
-    showMed:true,
-    title:'THE DALLES — NEGOTIATION',
-    sub:'Shoot the rapids or take the toll road.',
-    body:`The deal is approved in principle. Now: price. Procurement opens hard: <span class="hl">"We love it, but we need 40% off to sign this quarter."</span> Your champion quietly signals the budget is real but the discount expectation is too. The clock is loud.`,
-    choices:[
-      {text:'Protect the close — give the discount to lock the signature this quarter',
-        effect:{pipeline:-4,rep:-6},
-        next:()=>({showMed:true,title:'YOU HIT THE ROCKS',body:`The instant 40% told procurement the price was never real — so they came back for more, and legal slowed down knowing you'd fold. <span class="bad">Margin and credibility both down.</span> An unearned discount trains the buyer to distrust every number you give.`,talk:`The quarter-end pressure to "just discount and close" is enormous and real. What does it actually cost us beyond margin — and what's our alternative when the clock is genuinely ticking?`,choices:[{text:'Continue',next:'leg6b'}]})},
-      {text:'Hold the line — re-anchor on the ROI and the four tools BigID is replacing',
-        effect:{pipeline:+6,rep:+6,meddicc:{M:+1}},
-        next:()=>({showMed:true,title:'THE PRICE HOLDS',body:`You walked procurement back through the consolidation math and the value case. The discount talk quiets — they're buying a platform, not a line item. <span class="good">Price defended on value.</span> It took nerve and you spent a little goodwill doing it.`,choices:[{text:'Continue',next:'leg6b'}]})},
-      {text:'Trade for it — concede on price only in exchange for a multi-year term and a public reference',
-        effect:{pipeline:+8,rep:+5,champion:+4},
-        next:()=>({showMed:true,title:'A DISCOUNT THAT BUYS SOMETHING',body:`You give ground on price, but never for free — a longer term locks in revenue and a public reference becomes a sales asset. Procurement respects the discipline. <span class="good">Concession converted into value.</span>`,choices:[{text:'Continue',next:'leg6b'}]})}
-    ]
-  };}
-
-  NODES.leg6b = {
-    showMed:true,
-    title:'THE LAST FORD',
-    body:`One signature away. Legal flags a final redline on data-processing terms. It's narrow and technical, the clock is short, and everyone's tired. The team huddles on how to run the last hundred yards.`,
-    choices:[
-      {text:'Swarm it — AE, SE, deal desk and exec sponsor work the redline in parallel',
-        effect:{pipeline:+6,time:+6,champion:+4},
-        next:()=>({showMed:true,title:'THE WHOLE TEAM CROSSES',body:`Each specialist takes the piece they own and the redline is resolved in days, not weeks. The buyer sees a team that closes like it sells. <span class="good">The last mile, done as a unit.</span>`,choices:[{text:'Continue',next:'finale'}]})},
-      {text:'Keep it clean — let the AE own it solo so there\'s one clear point of contact',
-        effect:{time:-10,pipeline:-4},
-        next:()=>({showMed:true,title:'ALONE AT THE FORD',body:`A single point of contact sounded tidy, but the AE can't answer legal's questions and waits days for each internal response. <span class="bad">Time bleeds out</span> at the worst possible moment.`,choices:[{text:'Continue',next:'finale'}]})}
-    ]
-  };
-
-  // ---------- FINALE: scoring ----------
-  NODES.finale = ()=>{
-    S.leg=6;
-    const med = S.meddicc;
-    const medScore = Object.values(med).reduce((a,b)=>a+b,0); // max ~ around 22
-    const filled = Object.values(med).filter(v=>v>=1).length; // of 7
-    const health = (S.pipeline+S.champion+S.rep)/3;
-    const win = filled>=6 && health>=45 && S.time>0 && medScore>=11;
-    const partial = !win && filled>=4 && health>=30 && S.time>0;
-
-    if(win){
-      return {type:'win',title:'YOU REACHED OREGON CITY',sub:'CLOSED-WON · $1.2M ARR',art:SUMMIT,
-        body:`The wagon crests the final hill. <span class="good">The bank signs.</span> You qualified hard, found real pain, met the economic buyer, beat the competition on platform value, armed a real champion, and ran the process as a team.<br><br>MEDDICC filled: <span class="hl">${filled}/7</span> · Deal health: <span class="hl">${Math.round(health)}</span> · Quarter time left: <span class="hl">${S.time}</span><br><br>This is what a clean BigID deal looks like: <span class="good">one platform, proven value, no rival could match the breadth.</span>`,
-        talk:`Final round: which MEDDICC letter is WEAKEST across our real pipeline right now? That's our team's homework for this quarter.`,
-        choices:[{text:'Run the trail again',next:'start'},{text:'See the after-action report',next:'report'}]};
-    }
-    if(partial){
-      return {type:'win',title:'YOU LIMPED INTO OREGON CITY',sub:'CLOSED-WON · but it was ugly',art:SUMMIT,
-        body:`You made it — barely. The deal closed smaller and later than it should have because gaps in MEDDICC left you exposed.<br><br>MEDDICC filled: <span class="amber">${filled}/7</span> · Deal health: <span class="amber">${Math.round(health)}</span> · Time left: <span class="amber">${S.time}</span><br><br>A win is a win. But "barely" doesn't scale.`,
-        talk:`What got skipped on this run that made it ugly? Which of those do we skip in real life?`,
-        choices:[{text:'Run it cleaner',next:'start'},{text:'See the after-action report',next:'report'}]};
-    }
-    // qualified failure at the finish
-    return {type:'death',title:'NO DECISION',sub:'the deal slipped to "next quarter" — forever',art:GRAVE,
-      body:`You reached the gates of Oregon City, but the deal was too thin to cross. <span class="bad">Gaps in MEDDICC caught up with you</span> and the buyer chose to do nothing.<br><br>MEDDICC filled: <span class="bad">${filled}/7</span> · Deal health: <span class="bad">${Math.round(health)}</span><br><br>"No decision" is the competitor that wins most often.`,
-      talk:`If this were a real deal review, what's the ONE thing we'd tell this team to fix?`,
-      choices:[{text:'Re-pack the wagon',next:'start'},{text:'See the after-action report',next:'report'}]};
-  };
-
-  NODES.report = ()=>{
-    const med=S.meddicc;
-    const rows=Object.keys(MED_LABELS).map(k=>{
-      const v=med[k]; const status = v>=2?'<span class="good">STRONG</span>':v>=1?'<span class="hl">OK</span>':'<span class="bad">MISSED</span>';
-      return `${k} — ${MED_LABELS[k]}: ${status}`;
-    }).join('<br>');
-    return {type:'win',title:'AFTER-ACTION REPORT',progress:false,
-      body:`<div style="font-size:13px;line-height:1.8">${rows}</div><br>
-      <div style="border-top:1px solid var(--line);padding-top:12px">
-      Pipeline <span class="hl">${S.pipeline}</span> · Champion <span class="hl">${S.champion}</span> · Credibility <span class="hl">${S.rep}</span> · Time left <span class="hl">${S.time}</span></div>`,
-      talk:`Discussion: map each MISSED letter above to a real open deal. Who owns closing that gap, by when?`,
-      choices:[{text:'Run the trail again',next:'start'}]};
-  };
-
-  // boot
-  go(NODES.outfit);
-})();
+  });
 </script>
+</body>
+</html>
